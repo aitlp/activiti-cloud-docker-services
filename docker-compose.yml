@@ -3,6 +3,7 @@ version: '3'
 services:
   activiti-postgres:
     image: postgres
+    container_name: activiti-postgres
     ports:
       - "${POSTGRES_HOST_PORT}:5432"
     environment:
@@ -103,6 +104,8 @@ services:
       - nginx
       - keycloak
       - rabbitmq
+    networks:
+      - default
 
   activiti-cloud-query:
     container_name: activiti-cloud-query
@@ -138,6 +141,8 @@ services:
       - keycloak
       - rabbitmq
       - activiti-postgres
+    networks:
+      - default
 
   activiti-cloud-modeling:
     container_name: activiti-cloud-modeling
@@ -153,6 +158,8 @@ services:
       APP_CONFIG_OAUTH2_REDIRECT_LOGIN: /modeling
       APP_CONFIG_OAUTH2_REDIRECT_LOGOUT: /modeling
     restart: unless-stopped
+    networks:
+      - default
 
   activiti-cloud-modeling-backend:
     container_name: activiti-cloud-modeling-backend
@@ -166,9 +173,15 @@ services:
       ACT_KEYCLOAK_RESOURCE:        ${KEYCLOAK_RESOURCE}
       ACTIVITI_CLOUD_MODELING_URL:  localhost:8080
       SERVER_SERVLET_CONTEXT_PATH:  /modeling-service
+    networks:
+      - default
 
 volumes:
   rabbitmq-data:
   pgdata:
+
+
+networks:
+  default:
 
     
